@@ -1,0 +1,11 @@
++       gitignore change .env to .env.production
+
+es6
+
+console -> logger
+
+middlewares
+
+dotenv, config : db(passwors, user ...), port ...
+
++       config/passport/passport.js -> lib/passport.js

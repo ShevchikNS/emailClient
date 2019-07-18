@@ -1,0 +1,45 @@
+{
+  "name": "client_email",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dot-env": "0.0.1",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.1.0",
+    "express-session": "^1.16.2",
+    "hbs": "^4.0.4",
+    "http-errors": "~1.6.3",
+    "imap": "^0.8.19",
+    "mailparser": "^2.7.1",
+    "morgan": "~1.9.1",
+    "mysql": "^2.17.1",
+    "mysql2": "^1.6.5",
+    "nodemailer": "^6.3.0",
+    "nodemod": "^1.5.19",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pug": "2.0.0-beta11",
+    "sequelize": "^5.9.4",
+    "smtp-server": "^3.5.0"
+  },
+  "main": "app.js",
+  "devDependencies": {},
+  "author": "Shevchik Nikolai",
+  "license": "ISC",
+  "description": "sequelize_mysql",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShevchikNS/emailClient.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ShevchikNS/emailClient/issues"
+  },
+  "homepage": "https://github.com/ShevchikNS/emailClient#readme"
+}
