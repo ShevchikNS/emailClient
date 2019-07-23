@@ -1,14 +1,15 @@
-"use strict";
+
+
 module.exports = (sequelize, DataTypes) => {
   const FolderMessage = sequelize.define(
-    "FolderMessage",
+    'FolderMessage',
     {
       folderId: DataTypes.INTEGER,
-      messageId: DataTypes.INTEGER
+      messageId: DataTypes.INTEGER,
     },
-    {}
+    {},
   );
-  FolderMessage.associate = function(models) {
+  FolderMessage.associate = function (models) {
     // associations can be defined here
   };
   return FolderMessage;

@@ -6,11 +6,16 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "babel-eslint": "^10.0.2",
     "bcrypt-nodejs": "0.0.3",
+    "bluebird": "^3.5.5",
+    "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dot-env": "0.0.1",
     "dotenv": "^8.0.0",
+    "eslint-config-airbnb": "^17.1.1",
+    "eslint-config-airbnb-base": "^13.2.0",
     "express": "^4.16.4",
     "express-handlebars": "^3.1.0",
     "express-session": "^1.16.2",
@@ -30,7 +35,11 @@
     "smtp-server": "^3.5.0"
   },
   "main": "app.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.0"
+  },
   "author": "Shevchik Nikolai",
   "license": "ISC",
   "description": "sequelize_mysql",
