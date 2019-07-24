@@ -10,6 +10,7 @@ const models = require('./models');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 require('./services/imap');
+const logger = require('./utils/logger');
 
 // For BodyParser
 app.use(
@@ -54,24 +55,15 @@ app.use('/dashboard', (request, response) => {
   });
 });
 
-// Models
 // Routes
 require('./routes/auth.js')(app, passport);
 // load passport strategies
 require('./lib/passport')(passport, models.user);
-// Sync Database
-// models.sequelize
-//   .sync()
-//   .then(() => {
-//     console.log('Nice! Database looks fine');
-//   })
-//   .catch((err) => {
-//     console.log(err, 'Something went wrong with the Database Update!');
-//   });
+
 app.listen(5000, (err) => {
   if (err) {
-    // console.log(err);
+    logger.error(err, ['server error']);
   } else {
-    // console.log('Site is live');
+    logger.info('Site is live');
   }
 });

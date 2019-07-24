@@ -1,6 +1,7 @@
 const Imap = require('imap');
 const { MailParser } = require('mailparser');
 const Promise = require('bluebird');
+const logger = require('../utils/logger');
 
 Promise.longStackTraces();
 const imapConfig = {
@@ -12,68 +13,56 @@ const imapConfig = {
 };
 const imap = new Imap(imapConfig);
 Promise.promisifyAll(imap);
-
-
-imap.once('ready', execute);
-imap.once('error', (err) => {
-  log.error(`Connection error: ${err.stack}`);
-});
-imap.connect();
 function execute() {
-  imap.openBox('INBOX', false, (err, mailBox) => {
-    if (err) {
-      console.error('Inbox error:', err);
+  imap.openBox('INBOX', false, (error) => {
+    if (error) {
+      logger.info('Inbox error:', error);
       return;
     }
-    imap.search(['unseen'], (err, results) => {
-      if (!results || !results.length) {
-        console.log('No unread mails');
-        imap.end();
-        return;
-      }
-      const f = imap.fetch(results, { bodies: '' });
-      f.on('message', processMessage);
-      f.once('error', err => Promise.reject(err));
-      f.once('end', () => {
-        console.log('Done fetching all messages.');
-        imap.end();
-      });
-    });
     imap.search(['all'], (err, results) => {
       if (!results || !results.length) {
-        console.log('No unread mails');
+        logger.info('No unread mails');
         imap.end();
         return;
       }
-      const f = imap.fetch(results, { bodies: '' });
+      function processMessage(msg, seqno) {
+        logger.info(`Processing msg #${seqno}`);
+        const parser = new MailParser();
+        parser.on('headers', (headers) => {
+          logger.info(`Header: ${JSON.stringify(headers)}`);
+        });
+        parser.on('headers', (headers) => {
+          logger.info(`Header: ${JSON.stringify(headers)}`);
+        });
+        parser.on('data', (data) => {
+          if (data.type === 'text') {
+            logger.info(seqno);
+            logger.info(data.text);
+          }
+        });
+        msg.on('body', (stream) => {
+          stream.on('data', (chunk) => {
+            parser.write(chunk.toString('utf8'));
+          });
+        });
+        msg.once('end', () => {
+          parser.end();
+        });
+      }
+      const f = imap.fetch(results, { bodies: '' });     
       f.on('message', processMessage);
-      f.once('error', err => Promise.reject(err));
+      f.once('error', errors => Promise.reject(errors));
       f.once('end', () => {
-        console.log('Done fetching all unseen messages.');
+        logger.info('Done fetching all messages.');
         imap.end();
       });
     });
   });
 }
-function processMessage(msg, seqno) {
-  console.log(`Processing msg #${seqno}`);
-  // console.log(msg);
-  const parser = new MailParser();
-  parser.on('headers', (headers) => {
-    console.log(`Header: ${JSON.stringify(headers)}`);
-  });
-  parser.on('data', (data) => {
-    if (data.type === 'text') {
-      console.log(seqno);
-      console.log(data.text);
-    }
-  });
-  msg.on('body', (stream) => {
-    stream.on('data', (chunk) => {
-      parser.write(chunk.toString('utf8'));
-    });
-  });
-  msg.once('end', () => {
-    parser.end();
-  });
-}
+
+imap.once('ready', execute);
+
+imap.once('error', (err) => {
+  logger.info(`Connection error: ${err.stack}`);
+});
+imap.connect();
