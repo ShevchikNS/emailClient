@@ -9,7 +9,7 @@ const exphbs = require('express-handlebars');
 const models = require('./models');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-require('./services/imap');
+// require('./services/imap');
 const logger = require('./utils/logger');
 
 // For BodyParser
@@ -48,8 +48,9 @@ app.use('/dashboard', (request, response) => {
 
   response.render('dashboard.hbs', {
     title: 'My account',
-    email: request.user.email,
+    username: request.user.username,
   });
+
   app.get('/', (req, res) => {
     res.send('Welcome to Passport with Sequelize');
   });
@@ -57,6 +58,7 @@ app.use('/dashboard', (request, response) => {
 
 // Routes
 require('./routes/auth.js')(app, passport);
+app.use(require('./routes/getEmail'));
 // load passport strategies
 require('./lib/passport')(passport, models.user);
 

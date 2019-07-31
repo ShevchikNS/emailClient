@@ -13,4 +13,7 @@ module.exports = {
   dashboard: (req, res) => {
     res.render('dashboard');
   },
+  addEmail: (req, res) => {
+    res.render('addEmail');
+  },
 };

@@ -1,68 +1,82 @@
-const Imap = require('imap');
-const { MailParser } = require('mailparser');
-const Promise = require('bluebird');
-const logger = require('../utils/logger');
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-Promise.longStackTraces();
-const imapConfig = {
+const Imap = require('imap');
+const { inspect } = require('util');
+const { simpleParser } = require('mailparser');
+const logger = require('../utils/logger');
+// const models = require('../models');
+
+const imap = new Imap({
   user: 'myprojectemail11@gmail.com',
   password: 'myProjectEmail11',
   host: 'imap.gmail.com',
   port: 993,
   tls: true,
-};
-const imap = new Imap(imapConfig);
-Promise.promisifyAll(imap);
-function execute() {
-  imap.openBox('INBOX', false, (error) => {
-    if (error) {
-      logger.info('Inbox error:', error);
-      return;
-    }
-    imap.search(['all'], (err, results) => {
-      if (!results || !results.length) {
-        logger.info('No unread mails');
-        imap.end();
-        return;
-      }
-      function processMessage(msg, seqno) {
-        logger.info(`Processing msg #${seqno}`);
-        const parser = new MailParser();
-        parser.on('headers', (headers) => {
-          logger.info(`Header: ${JSON.stringify(headers)}`);
-        });
-        parser.on('headers', (headers) => {
-          logger.info(`Header: ${JSON.stringify(headers)}`);
-        });
-        parser.on('data', (data) => {
-          if (data.type === 'text') {
-            logger.info(seqno);
-            logger.info(data.text);
-          }
-        });
-        msg.on('body', (stream) => {
-          stream.on('data', (chunk) => {
-            parser.write(chunk.toString('utf8'));
-          });
-        });
-        msg.once('end', () => {
-          parser.end();
-        });
-      }
-      const f = imap.fetch(results, { bodies: '' });     
-      f.on('message', processMessage);
-      f.once('error', errors => Promise.reject(errors));
-      f.once('end', () => {
-        logger.info('Done fetching all messages.');
-        imap.end();
-      });
-    });
-  });
+});
+
+function openInbox(cb) {
+  imap.openBox('INBOX', true, cb);
 }
 
-imap.once('ready', execute);
+imap.once('ready', () => {
+  openInbox((error, box) => {
+    if (error) throw error;
+    logger.info(`${box.messages.total} message(s) found!`);
+    // 1:* - Retrieve all messages
+    // 3:5 - Retrieve messages #3,4,5
+    const f = imap.seq.fetch('1:*', {
+      bodies: '',
+    });
+    f.on('message', (msg, seqno) => {
+      logger.info('Message #%d', seqno);
+      const prefix = `(#${seqno}) `;
 
+      msg.on('body', (stream) => {
+        simpleParser(stream, (err, mail) => {
+          logger.info(prefix + mail.headers.get('subject'));
+          logger.info(prefix + mail.text);
+          /* models.Message.create({
+            text: mail.text,
+            userID: models.User.findOne('myprojectemail11@gmail.com')
+              .then((user) => {
+                if (!user) return; // если пользователь не найден
+                logger.info(user.name);
+              })
+              .catch(err => logger.info(err)),
+          });
+          */
+        });
+
+        // or, write to file
+        // stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
+      });
+      msg.once('attributes', (attrs) => {
+        logger.info(`${prefix}Attributes: %s`, inspect(attrs, false, 8));
+      });
+      msg.once('end', () => {
+        logger.info(`${prefix}Finished`);
+      });
+    });
+    f.once('error', (err) => {
+      logger.info(`Fetch error: ${err}`);
+    });
+    f.once('end', () => {
+      logger.info('Done fetching all messages!');
+      imap.end();
+    });
+
+    // search example
+    //    imap.search([ 'UNSEEN', ['SINCE', 'May 20, 2010'] ], function(err, results) {
+    //      if (err) throw err;
+    //      var f = imap.fetch(results, { bodies: '' });
+    //      ...
+    //    }
+  });
+});
 imap.once('error', (err) => {
-  logger.info(`Connection error: ${err.stack}`);
+  logger.info(err);
+});
+imap.once('end', () => {
+  logger.info('Connection ended');
 });
 imap.connect();

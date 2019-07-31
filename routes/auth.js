@@ -19,6 +19,7 @@ module.exports = (app, passport) => {
     return res.redirect('/signin');
   }
   app.get('/dashboard', isLoggedIn, authController.dashboard);
+
   app.get('/logout', authController.logout);
   app.post(
     '/signin',
@@ -27,4 +28,6 @@ module.exports = (app, passport) => {
       failureRedirect: '/signin',
     }),
   );
+
+
 };

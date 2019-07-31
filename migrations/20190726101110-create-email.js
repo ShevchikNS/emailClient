@@ -1,24 +1,17 @@
 
-
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('Messages', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('Emails', {
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
-    text: {
-      type: Sequelize.STRING,
+    email: {
+      type: Sequelize.TEXT,
     },
-    from: {
-      type: Sequelize.STRING,
-    },
-    to: {
-      type: Sequelize.STRING,
-    },
-    sendTime: {
-      type: Sequelize.DATE,
+    password: {
+      type: Sequelize.TEXT,
     },
     userId: {
       type: Sequelize.INTEGER,
@@ -32,5 +25,5 @@ module.exports = {
       type: Sequelize.DATE,
     },
   }),
-  down: (queryInterface, Sequelize) => queryInterface.dropTable('Messages'),
+  down: (queryInterface, Sequelize) => queryInterface.dropTable('Emails'),
 };

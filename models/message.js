@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       from: DataTypes.STRING,
       to: DataTypes.STRING,
       sendTime: DataTypes.DATE,
-      userID: DataTypes.INTEGER,
+      emailID: DataTypes.INTEGER,
     },
     {},
   );

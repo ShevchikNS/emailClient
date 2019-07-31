@@ -1,10 +1,8 @@
-
-
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'User',
     {
-      email: DataTypes.STRING,
+      username: DataTypes.STRING,
       password: DataTypes.STRING,
       profileId: DataTypes.INTEGER,
     },
@@ -14,7 +12,11 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
   User.associate = function (models) {
-    // associations can be defined here
+    User.belongsToMany(models.Email, {
+      through: 'EmailUser',
+      as: 'email',
+      foreignKey: 'userId',
+    });
   };
   return User;
 };
