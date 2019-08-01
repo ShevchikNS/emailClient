@@ -13,9 +13,6 @@ module.exports = {
     password: {
       type: Sequelize.TEXT,
     },
-    userId: {
-      type: Sequelize.INTEGER,
-    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,

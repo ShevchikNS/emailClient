@@ -58,7 +58,8 @@ app.use('/dashboard', (request, response) => {
 
 // Routes
 require('./routes/auth.js')(app, passport);
-app.use(require('./routes/getEmail'));
+app.use(require('./routes/api/email'));
+app.use(require('./routes/api/profile'));
 // load passport strategies
 require('./lib/passport')(passport, models.user);
 

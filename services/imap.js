@@ -35,20 +35,7 @@ imap.once('ready', () => {
         simpleParser(stream, (err, mail) => {
           logger.info(prefix + mail.headers.get('subject'));
           logger.info(prefix + mail.text);
-          /* models.Message.create({
-            text: mail.text,
-            userID: models.User.findOne('myprojectemail11@gmail.com')
-              .then((user) => {
-                if (!user) return; // если пользователь не найден
-                logger.info(user.name);
-              })
-              .catch(err => logger.info(err)),
-          });
-          */
         });
-
-        // or, write to file
-        // stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
       });
       msg.once('attributes', (attrs) => {
         logger.info(`${prefix}Attributes: %s`, inspect(attrs, false, 8));

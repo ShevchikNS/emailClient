@@ -7,8 +7,7 @@ module.exports = {
 
   addProfile: async (req, res, next) => {
     // const userId = req.user.id;
-    console.log(req.body);
-    
+
     const data = {
       firstName: req.body.firstname,
       lastName: req.body.lastname,
