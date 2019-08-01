@@ -1,4 +1,3 @@
-const logger = require('../utils/logger');
 const service = require('../services/emaildb');
 
 module.exports = {
