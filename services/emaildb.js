@@ -5,5 +5,6 @@ module.exports = {
     const user = await models.User.findByPk(userId);
     const email = await models.Email.create(emailData);
     user.addEmail(email);
+    return email;
   },
 };
