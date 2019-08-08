@@ -1,5 +1,3 @@
-
-
 module.exports = (sequelize, DataTypes) => {
   const Message = sequelize.define(
     'Message',
@@ -12,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {},
   );
-  Message.associate = function (models) {
+  Message.associate = function () {
     // associations can be defined here
   };
   return Message;

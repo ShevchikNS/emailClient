@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {},
   );
-  Profile.associate = function (models) {
+  Profile.associate = function () {
     // fdgdf
   };
   return Profile;
