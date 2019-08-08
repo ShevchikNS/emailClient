@@ -13,9 +13,11 @@ module.exports = {
     },
     password: {
       type: Sequelize.STRING,
+      allowNull: false,
     },
     profileId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
     createdAt: {
       allowNull: false,
