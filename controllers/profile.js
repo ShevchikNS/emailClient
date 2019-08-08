@@ -1,20 +1,22 @@
 const service = require('../services/profiledb');
+const logger = require('../utils/logger');
 
 module.exports = {
   showProfileAddPage: (req, res, next) => {
-    res.render('addProfile');
+    res.render('profile');
   },
 
   addProfile: async (req, res, next) => {
-    // const userId = req.user.id;
-
     const data = {
       firstName: req.body.firstname,
       lastName: req.body.lastname,
       userId: req.user.id,
     };
-    const profile = await service.create(data);
-
-    res.send(profile);
+    try {
+      const profile = await service.create(data);
+      res.send(profile);
+    } catch (error) {
+      logger.error(error, ['controllers', 'profile', 'addProfile', `userId ${data.userId}`]);
+    }
   },
 };
