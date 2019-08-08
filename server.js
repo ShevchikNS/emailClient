@@ -7,9 +7,12 @@ const bodyParser = require('body-parser');
 // const env = require('dotenv');
 const exphbs = require('express-handlebars');
 const models = require('./models');
+const config = require('./config/config.json');
+
+const routes = require('./routes');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-// require('./services/imap');
+require('./services/imap');
 const logger = require('./utils/logger');
 
 // For BodyParser
@@ -18,7 +21,6 @@ app.use(
     extended: true,
   }),
 );
-app.use(bodyParser.json());
 
 // For Passport
 app.use(
@@ -43,27 +45,13 @@ app.engine(
   }),
 );
 app.set('view engine', '.hbs');
-app.use('/dashboard', (request, response) => {
-  // to routes
 
-  response.render('dashboard.hbs', {
-    title: 'My account',
-    username: request.user.username,
-  });
-
-  app.get('/', (req, res) => {
-    res.send('Welcome to Passport with Sequelize');
-  });
-});
-
-// Routes
-require('./routes/auth.js')(app, passport);
-app.use(require('./routes/api/email'));
-app.use(require('./routes/api/profile'));
 // load passport strategies
 require('./lib/passport')(passport, models.user);
 
-app.listen(5000, (err) => {
+app.use('/', routes);
+
+app.listen(config.server.port, (err) => {
   if (err) {
     logger.error(err, ['server error']);
   } else {
